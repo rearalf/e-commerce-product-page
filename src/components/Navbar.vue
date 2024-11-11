@@ -1,7 +1,7 @@
 <template>
-  <v-app-bar app class="bg-white app_bar px-3 border-b">
+  <v-app-bar app class="bg-white app_bar px-3 border-b position-relative">
     <v-app-bar-nav-icon
-      class="bg-transparent p-2 d-sm-none d-flex"
+      class="bg-transparent p-2 d-md-none d-flex"
       icon
       style="box-shadow: none"
       variant="plain"
@@ -14,18 +14,82 @@
       <v-img cover src="/public/images/logo.svg" width="150" />
     </v-app-bar-title>
 
-    <v-list class="inline-menu d-none d-sm-flex pa-0" nav>
+    <v-list class="inline-menu d-none d-md-flex pa-0" nav>
       <v-list-item v-for="(item, index) in links" :key="index" link>
         <v-list-item-title>{{ item.title }}</v-list-item-title>
       </v-list-item>
     </v-list>
 
-    <v-btn icon>
-      <v-img cover src="/public/images/icon-cart.svg" :width="22" />
-    </v-btn>
+    <v-menu
+      v-model="menu"
+      class="position-relative"
+      :close-on-content-click="false"
+    >
+      <template #activator="{ props }">
+        <v-btn icon v-bind="props">
+          <v-img cover src="/public/images/icon-cart.svg" :width="16" />
+        </v-btn>
+      </template>
 
-    <v-btn icon>
-      <v-img cover src="/public/images/image-avatar.png" :width="40" />
+      <v-card>
+        <v-list>
+          <v-list-item>
+            <v-list-item-title class="font-weight-bold">
+              Cart
+            </v-list-item-title>
+          </v-list-item>
+        </v-list>
+
+        <v-divider />
+
+        <v-list
+          v-if="propsValues.cart.length > 0"
+          class="px-4 py-5 d-flex flex-column ga-4"
+        >
+          <v-list-item
+            v-for="item in propsValues.cart"
+            :key="item.id"
+            class="w-100 pa-0 d-flex justify-space-between"
+          >
+            <v-img
+              class="rounded-lg"
+              cover
+              :height="50"
+              :src="item.img"
+              :width="35"
+            />
+            <div class="article_cart d-flex flex-column justify-center ga-1">
+              <h3 class="text-body-2 text-grayish-blue">
+                {{ item.title }}
+              </h3>
+              <p class="text-body-2 text-grayish-blue">
+                ${{ item.price }} x {{ item.amount }}
+                <span class="text-black font-weight-bold">${{ (item.amount * item.price).toFixed(2) }}</span>
+              </p>
+            </div>
+            <v-btn icon style="box-shadow: none">
+              <v-img src="/public/images/icon-delete.svg" :width="12" />
+            </v-btn>
+          </v-list-item>
+        </v-list>
+        <div v-else class="empty_cart">
+          <h3 class="font-weight-bold">Your cart is empty.</h3>
+        </div>
+
+        <v-card-actions v-if="propsValues.cart.length > 0" class="px-4 pb-8">
+          <v-list-item class="w-100 pa-0">
+            <v-btn
+              class="bg-orange-darken-4 text-capitalize w-100 py-4 rounded-lg"
+            >
+              Checkout
+            </v-btn>
+          </v-list-item>
+        </v-card-actions>
+      </v-card>
+    </v-menu>
+
+    <v-btn class="btn-avatar" icon>
+      <v-img cover src="/public/images/image-avatar.png" :width="36" />
     </v-btn>
   </v-app-bar>
 
@@ -62,7 +126,25 @@
 </template>
 
 <script setup lang="ts">
+  interface CartItem {
+    id: number;
+    img: string;
+    title: string;
+    price: number;
+    amount: number;
+  }
+
+  const propsValues = defineProps({
+    cart: {
+      type: Array as PropType<CartItem[]>,
+      required: true,
+    },
+  })
+
+  console.log(propsValues.cart.length)
+
   const state = ref(false)
+  const menu = ref(false)
   const links = [
     { title: 'Collections', to: '/' },
     { title: 'Fieles', to: '/' },
@@ -92,23 +174,46 @@
   transform: translateX(0);
 }
 
+.v-overlay__content {
+  left: 0.5rem !important;
+  top: -790px !important;
+  max-width: none !important;
+  width: 96% !important;
+}
+
+.v-overlay__content .empty_cart {
+  min-height: 12rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.v-overlay__content .empty_cart h3 {
+  color: #b6bcc8;
+  font-size: 16px !important;
+}
+
+.v-btn.v-btn--density-default.bg-orange-darken-4 {
+  height: auto !important;
+}
+
+.v-list-item div.v-list-item__content {
+  display: flex;
+  gap: 14px;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.v-btn.btn-avatar:hover{
+  border: 2px solid #ff7d1a;
+}
+
+.v-list-item .article_cart{
+  flex: 11;
+}
+
 @media screen and (min-width: 768px) {
-  .v-app-bar.v-toolbar.app_bar {
-    position: relative !important;
-    margin: 0 auto;
-    max-width: 64rem !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-  }
-
-  .v-toolbar__content {
-    height: auto !important;
-  }
-
-  .v-toolbar-title {
-    flex: 0.8 !important;
-  }
-
   .v-list .v-list-item--nav {
     margin-bottom: 0 !important;
     min-height: 0 !important;
@@ -122,16 +227,17 @@
     background-color: transparent;
   }
 
-  .v-list-item:hover > .v-list-item__overlay{
-    opacity: 0;
+  .v-list-item:hover > .v-list-item__overlay {
+    opacity: 0 !important;
   }
 
   .v-list .v-list-item--nav::after {
     border: 0;
+    top: inherit;
   }
 
   .v-list .v-list-item--nav:hover::after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: 0;
     border: 0;
@@ -140,14 +246,52 @@
     height: 3px;
     background-color: hsl(26, 100%, 55%);
   }
+}
 
+@media screen and (min-width: 1024px) {
+  .v-app-bar.v-toolbar.app_bar {
+    position: relative !important;
+    margin: 0 auto;
+    max-width: 50rem !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .v-toolbar__content {
+    height: auto !important;
+  }
+
+  .v-toolbar-title {
+    flex: 1.2 !important;
+  }
+
+  .v-overlay__content {
+    left: 50rem !important;
+    transform: translateX(-50%);
+    top: -49rem !important;
+    max-width: none !important;
+    min-width: 22rem !important;
+    width: auto !important;
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  .v-app-bar.v-toolbar.app_bar {
+    max-width: 64rem !important;
+  }
+
+  .v-overlay__content {
+    left: 70rem !important;
+    top: -55rem !important;
+    min-width: 22rem !important;
+  }
 }
 
 .inline-menu {
   background: transparent !important;
   color: #b6bcc8 !important;
   flex: 3;
-  gap: 50px;
+  gap: 44px;
 
   &.v-sheet.v-list {
     display: inline-flex !important;
