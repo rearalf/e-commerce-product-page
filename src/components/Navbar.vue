@@ -176,7 +176,7 @@
 
 .v-overlay__content {
   left: 0.5rem !important;
-  top: -790px !important;
+  top: -49rem !important;
   max-width: none !important;
   width: 96% !important;
 }
@@ -284,6 +284,10 @@
     left: 70rem !important;
     top: -55rem !important;
     min-width: 22rem !important;
+  }
+
+  .v-toolbar-title {
+    flex: .8 !important;
   }
 }
 
