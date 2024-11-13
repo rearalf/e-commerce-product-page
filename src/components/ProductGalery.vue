@@ -44,28 +44,37 @@
 </template>
 
 <script setup lang="ts">
+  import thumbnail1 from '@/assets/image-product-1-thumbnail.jpg'
+  import product1 from '@/assets/image-product-1.jpg'
+  import thumbnail2 from '@/assets/image-product-2-thumbnail.jpg'
+  import product2 from '@/assets/image-product-2.jpg'
+  import thumbnail3 from '@/assets/image-product-3-thumbnail.jpg'
+  import product3 from '@/assets/image-product-3.jpg'
+  import thumbnail4 from '@/assets/image-product-4-thumbnail.jpg'
+  import product4 from '@/assets/image-product-4.jpg'
+
   const indexImage = ref(0)
 
   const options = [
     {
       id: 0,
-      thumbnail: '/public/images/image-product-1-thumbnail.jpg',
-      img: '/public/images/image-product-1.jpg',
+      thumbnail: thumbnail1,
+      img: product1,
     },
     {
       id: 1,
-      thumbnail: '/public/images/image-product-2-thumbnail.jpg',
-      img: '/public/images/image-product-2.jpg',
+      thumbnail: thumbnail2,
+      img: product2,
     },
     {
       id: 2,
-      thumbnail: '/public/images/image-product-3-thumbnail.jpg',
-      img: '/public/images/image-product-3.jpg',
+      thumbnail: thumbnail3,
+      img: product3,
     },
     {
       id: 3,
-      thumbnail: '/public/images/image-product-4-thumbnail.jpg',
-      img: '/public/images/image-product-4.jpg',
+      thumbnail: thumbnail4,
+      img: product4,
     },
   ]
 </script>
