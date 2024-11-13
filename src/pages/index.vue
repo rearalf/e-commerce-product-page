@@ -1,5 +1,5 @@
 <template>
-  <Navbar :cart="cart" />
+  <Navbar />
   <v-container class="pa-0 mt-md-14 container">
     <v-row no-gutters>
       <v-col cols="12" md="6" sm="12">
@@ -71,7 +71,18 @@
               <v-img src="/public/images/icon-plus.svg" :width="12" />
             </v-btn>
           </div>
-          <v-btn class="btn_add_cart bg-orange py-4 h-auto rounded-lg flex-1-1">
+          <v-btn
+            class="btn_add_cart bg-orange py-4 h-auto rounded-lg flex-1-1"
+            @click="
+              addToCart({
+                amount,
+                img: '/public/images/image-product-1-thumbnail.jpg',
+                price: 125,
+                title: 'Fall Limited Edition Sneakers',
+                id: 0,
+              })
+            "
+          >
             <v-img src="/public/images/icon-cart.svg" :width="16" />
             <p class="ml-2">Add to cart</p>
           </v-btn>
@@ -82,17 +93,11 @@
 </template>
 
 <script lang="ts" setup>
+  import { useAppStore } from '@/stores/app'
+
   const amount = ref(0)
 
-  const cart = [
-    {
-      id: 1,
-      img: '/images/image-product-1-thumbnail.jpg',
-      title: 'Fall Limited Edition Sneakers',
-      price: 125.0,
-      amount: 3,
-    },
-  ]
+  const { addToCart } = useAppStore()
 </script>
 
 <style lang="scss">

@@ -43,11 +43,11 @@
         <v-divider />
 
         <v-list
-          v-if="propsValues.cart.length > 0"
-          class="px-4 py-5 d-flex flex-column ga-4"
+          v-if="store.cart.length > 0"
+          class="cart_list px-4 py-5 d-flex flex-column ga-4"
         >
           <v-list-item
-            v-for="item in propsValues.cart"
+            v-for="item in store.cart"
             :key="item.id"
             class="w-100 pa-0 d-flex justify-space-between"
           >
@@ -67,7 +67,11 @@
                 <span class="text-black font-weight-bold">${{ (item.amount * item.price).toFixed(2) }}</span>
               </p>
             </div>
-            <v-btn icon style="box-shadow: none">
+            <v-btn
+              icon
+              style="box-shadow: none"
+              @click="store.removeFromCart(item.id)"
+            >
               <v-img src="/public/images/icon-delete.svg" :width="12" />
             </v-btn>
           </v-list-item>
@@ -76,10 +80,11 @@
           <h3 class="font-weight-bold">Your cart is empty.</h3>
         </div>
 
-        <v-card-actions v-if="propsValues.cart.length > 0" class="px-4 pb-8">
+        <v-card-actions v-if="store.cart.length > 0" class="px-4 pb-8">
           <v-list-item class="w-100 pa-0">
             <v-btn
               class="bg-orange-darken-4 text-capitalize w-100 py-4 rounded-lg"
+              @click="() => console.log(store.cart)"
             >
               Checkout
             </v-btn>
@@ -126,22 +131,9 @@
 </template>
 
 <script setup lang="ts">
-  interface CartItem {
-    id: number;
-    img: string;
-    title: string;
-    price: number;
-    amount: number;
-  }
+  import { useAppStore } from '@/stores/app'
 
-  const propsValues = defineProps({
-    cart: {
-      type: Array as PropType<CartItem[]>,
-      required: true,
-    },
-  })
-
-  console.log(propsValues.cart.length)
+  const store = useAppStore()
 
   const state = ref(false)
   const menu = ref(false)
@@ -176,9 +168,15 @@
 
 .v-overlay__content {
   left: 0.5rem !important;
-  top: -49rem !important;
+  top: -52rem !important;
   max-width: none !important;
   width: 96% !important;
+}
+
+.cart_list {
+  overflow-y: auto !important;
+  max-height: 20rem;
+  min-height: 8rem;
 }
 
 .v-overlay__content .empty_cart {
@@ -205,15 +203,19 @@
   align-items: center;
 }
 
-.v-btn.btn-avatar:hover{
+.v-btn.btn-avatar:hover {
   border: 2px solid #ff7d1a;
 }
 
-.v-list-item .article_cart{
+.v-list-item .article_cart {
   flex: 11;
 }
 
 @media screen and (min-width: 768px) {
+  .v-overlay__content {
+    top: -71rem !important;
+  }
+
   .v-list .v-list-item--nav {
     margin-bottom: 0 !important;
     min-height: 0 !important;
@@ -287,7 +289,7 @@
   }
 
   .v-toolbar-title {
-    flex: .8 !important;
+    flex: 0.8 !important;
   }
 }
 

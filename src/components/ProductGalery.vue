@@ -23,7 +23,7 @@
         }"
         min-height="auto"
         min-width="auto"
-        style="border: 3px solid; border-color: white;"
+        style="border: 3px solid; border-color: white"
         @click="() => (indexImage = item.id)"
       >
         <div
